@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enviar FCM</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+  <style>
+    :root {
+      --android-green: #3DDC84;
+      --android-blue: #4285F4;
+      --dark-blue: #073042;
+      --light-gray: #f5f5f5;
+      --dark-gray: #333333;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, var(--dark-blue), #0a1a2a);
+      color: white;
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(10, 25, 41, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    h1 {
+      color: var(--android-green);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 25%;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--android-blue), transparent);
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--android-green);
+      font-weight: 500;
+    }
+    
+    textarea, input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+      transition: all 0.3s ease;
+    }
+    
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: var(--android-blue);
+      box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3);
+    }
+    
+    button {
+      background: linear-gradient(135deg, var(--android-green), #2abb67);
+      color: var(--dark-blue);
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 50px;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(61, 220, 132, 0.3);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(61, 220, 132, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    #result {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      white-space: pre-wrap;
+      color: var(--light-gray);
+      border-left: 3px solid var(--android-blue);
+      font-family: monospace;
+      min-height: 50px;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .android-icon {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      color: var(--android-green);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="android-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 18C6 18.55 6.45 19 7 19H8V22.5C8 23.33 8.67 24 9.5 24C10.33 24 11 23.33 11 22.5V19H13V22.5C13 23.33 13.67 24 14.5 24C15.33 24 16 23.33 16 22.5V19H17C17.55 19 18 18.55 18 18V8H6V18ZM3.5 8C2.67 8 2 8.67 2 9.5V16.5C2 17.33 2.67 18 3.5 18C4.33 18 5 17.33 5 16.5V9.5C5 8.67 4.33 8 3.5 8ZM20.5 8C19.67 8 19 8.67 19 9.5V16.5C19 17.33 19.67 18 20.5 18C21.33 18 22 17.33 22 16.5V9.5C22 8.67 21.33 8 20.5 8ZM15.53 2.16L16.83 0.86C17.03 0.66 17.03 0.35 16.83 0.15C16.63 -0.05 16.32 -0.05 16.12 0.15L14.64 1.63C13.85 1.23 12.95 1 12 1C11.04 1 10.14 1.23 9.34 1.63L7.85 0.15C7.65 -0.05 7.34 -0.05 7.14 0.15C6.94 0.35 6.94 0.66 7.14 0.86L8.45 2.17C6.97 3.26 6 5.01 6 7H18C18 5.01 17.03 3.25 15.53 2.16ZM10 5H9V4H10V5ZM15 5H14V4H15V5Z" fill="#3DDC84"/>
+      </svg>
+    </div>
+    <h1>Enviar notificación FCM</h1>
+    <form id="fcmForm">
+      <div class="form-group">
+        <label for="token">Token del cliente:</label>
+        <textarea id="token" name="token" rows="3" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required/>
+      </div>
+
+      <div class="form-group">
+        <label for="body">Mensaje:</label>
+        <textarea id="body" name="body" rows="3" required></textarea>
+      </div>
+
+      <button type="submit">Enviar Notificación</button>
+    </form>
+
+    <pre id="result"></pre>
+  </div>
+
+  <script>
+    document.getElementById('fcmForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = new URLSearchParams(new FormData(form));
+      const res = await fetch('/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: data
+      });
+      const text = await res.text();
+      document.getElementById('result').innerText = text;
+    });
+  </script>
+</body>
+</html>
