@@ -172,17 +172,40 @@
   </div>
 
   <script>
-    document.getElementById('fcmForm').addEventListener('submit', async e => {
+    //Script para procesar el formulario y mostrar la respuesta del servidor
+    //1. Obtener el formulario por su id
+    const form = document.getElementById('fcmForm');
+
+    //2. Agregar listener para el evento submit del formulario
+    form.addEventListener('submit', async function(e) {
+      //Detener el envio por defecto del formulario (no recarga la pagina)
       e.preventDefault();
-      const form = e.target;
-      const data = new URLSearchParams(new FormData(form));
-      const res = await fetch('/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: data
-      });
-      const text = await res.text();
-      document.getElementById('result').innerText = text;
+
+      //3. Crear un objeto URLSearchParams con los datos del formulario
+      //FormData extrae todos los campos y sus valores
+      const formData = new FormData(form);
+      const data = new URLSearchParams(formData);
+
+      //4. Enviar peticion POST al endpoint '/send' de nuestro server
+      try {
+        const response = await fetch('/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: data //token, title y body enviados al servidor
+        });
+
+        //5. Leer la respuesta como texto (puede ser confirmacion o mensaje de error)
+        const resultText = await response.text();
+
+        //6. Mostrar el texto de respuesta dentro del <pre id="result">
+        const resultContainer = document.getElementById('result');
+        resultContainer.innerText = resultText;
+      } catch (error) {
+        //7. En caso de fallo en la peticion, mostrar error en la pantalla
+        document.getElementById('result').innerText = 'Error al conectar con el servidor: ' + error;
+      }
     });
   </script>
 </body>
